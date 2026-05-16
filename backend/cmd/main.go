@@ -31,6 +31,8 @@ func main() {
 	}
 	defer dbPool.Close()
 
+	log.Println("connected to postgreSQL successfully")
+
 	cache.InitializeRedis(cfg)
 
 	stockCache := cache.NewStockCache()
