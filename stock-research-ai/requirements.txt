@@ -1,0 +1,99 @@
+# =========================
+# FastAPI
+# =========================
+fastapi
+uvicorn[standard]
+
+# =========================
+# Configuration
+# =========================
+python-dotenv
+pydantic
+pydantic-settings
+
+# =========================
+# HTTP Clients
+# =========================
+httpx
+requests
+
+# =========================
+# LangGraph / LangChain
+# =========================
+langgraph
+langchain
+langchain-core
+langchain-community
+
+# =========================
+# Gemini
+# =========================
+google-genai
+
+# =========================
+# Groq
+# =========================
+groq
+
+# =========================
+# LlamaIndex
+# =========================
+llama-index
+llama-index-vector-stores-qdrant
+llama-index-embeddings-gemini
+
+# =========================
+# Vector Database
+# =========================
+qdrant-client
+
+# =========================
+# PostgreSQL
+# =========================
+sqlalchemy
+psycopg2-binary
+alembic
+
+# =========================
+# Data Processing
+# =========================
+pandas
+numpy
+
+# =========================
+# Financial Calculations
+# =========================
+ta
+
+# =========================
+# PDF Processing
+# =========================
+pypdf
+pdfplumber
+
+# =========================
+# Async Utilities
+# =========================
+aiofiles
+
+# =========================
+# Logging
+# =========================
+loguru
+
+# =========================
+# Retry / Resilience
+# =========================
+tenacity
+
+# =========================
+# XTrace Memory SDK
+# =========================
+# install after checking latest docs
+# xtrace-memory
+
+# =========================
+# Testing
+# =========================
+pytest
+pytest-asyncio
