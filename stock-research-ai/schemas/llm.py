@@ -1,12 +1,15 @@
-from pydantic import BaseModel
 from typing import Optional
 
+from pydantic import BaseModel
+
+
 class LLMRequest(BaseModel):
-    promt:str
-    system:Optional[str]=None
-    model: Optional[str]=None
-    max_tokens:int=4096
-    temperature:float=0.3
+    prompt: str
+    system: Optional[str] = None
+    model: Optional[str] = None
+    max_tokens: int = 4096
+    temperature: float = 0.3
+
 
 class LLMResponse(BaseModel):
     text: str

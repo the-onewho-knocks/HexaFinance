@@ -1,8 +1,10 @@
 from groq import AsyncGroq
+from loguru import logger
+
 from core.config import settings
 from core.exceptions import LLMError
 from schemas.llm import LLMRequest, LLMResponse
-from loguru import logger
+
 
 class GroqProvider:
     def __init__(self):
@@ -11,8 +13,10 @@ class GroqProvider:
     async def complete(self, req: LLMRequest) -> LLMResponse:
         model = req.model or "llama-3.3-70b-versatile"
         messages = []
+
         if req.system:
             messages.append({"role": "system", "content": req.system})
+
         messages.append({"role": "user", "content": req.prompt})
 
         try:
@@ -22,12 +26,15 @@ class GroqProvider:
                 max_tokens=req.max_tokens,
                 temperature=req.temperature,
             )
+
             choice = resp.choices[0]
+            usage = resp.usage
+
             return LLMResponse(
                 text=choice.message.content or "",
                 model=model,
-                input_tokens=resp.usage.prompt_tokens,
-                output_tokens=resp.usage.completion_tokens,
+                input_tokens=usage.prompt_tokens if usage else 0,
+                output_tokens=usage.completion_tokens if usage else 0,
             )
         except Exception as e:
             logger.error(f"Groq error: {e}")
