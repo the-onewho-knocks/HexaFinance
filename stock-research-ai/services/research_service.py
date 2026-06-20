@@ -1,5 +1,5 @@
 import json
-from datetime import datetime , timezone
+from datetime import datetime, timezone
 from uuid import uuid4
 
 from loguru import logger
@@ -7,13 +7,14 @@ from loguru import logger
 from database.postgres import get_connection
 from graph.workflow import run_research_workflow
 from memory.memory_service import MemoryService
-from schemas.research import ResearchRequest , ResearchResponse
+from schemas.research import ResearchRequest, ResearchResponse
+
 
 class ResearchService:
-    def __init__(self)-> None:
+    def __init__(self) -> None:
         self._memory = MemoryService()
 
-    async def run_search(self , request: ResearchRequest) -> ResearchResponse:
+    async def run_research(self, request: ResearchRequest) -> ResearchResponse:
         request_id = str(uuid4())
         symbol = request.symbol.upper()
 
@@ -21,14 +22,14 @@ class ResearchService:
 
         try:
             result = await run_research_workflow(
-                symbol = symbol,
-                user_id= request_id,
-                deep_analysis= request.deep_analysis,
+                symbol=symbol,
+                user_id=request.user_id,
+                deep_analysis=request.deep_analysis,
             )
         except Exception as exc:
             logger.error(f"Workflow failed for {symbol}: {exc}")
-            return self._error_response(symbol , request_id , str(exc))
-        
+            return self._error_response(symbol, request_id, str(exc))
+
         aggregated = result.get("aggregated", {})
 
         response = ResearchResponse(
@@ -68,26 +69,21 @@ class ResearchService:
             created_at=datetime.now(timezone.utc).isoformat(),
         )
 
-        """
-        so here _persist() and _store_if_enabled are helper functions defined
-        for 
-        """
-
-        await self._persist(request_id , request , response)
-        await self._store_if_enabled(symbol , request.user_id , aggregated)
+        await self._persist(request_id, request, response)
+        await self._store_if_enabled(symbol, request.user_id, aggregated)
 
         return response
-    
+
     async def _persist(
-            self,
-            request_id:str,
-            request: ResearchRequest,
-            response: ResearchResponse,
-    )-> None:
+        self,
+        request_id: str,
+        request: ResearchRequest,
+        response: ResearchResponse,
+    ) -> None:
         try:
             conn = get_connection()
             with conn.cursor() as cur:
-                cur.execute(                    
+                cur.execute(
                     """
                     INSERT INTO research_runs (
                         id, symbol, user_id, input_payload,
@@ -104,24 +100,23 @@ class ResearchService:
                         "completed",
                         datetime.now(timezone.utc),
                         datetime.now(timezone.utc),
-
                     ),
                 )
-                conn.commit()
-                conn.close()
+            conn.commit()
+            conn.close()
         except Exception as exc:
-            logger.warning(f"failed to persist research run: {exc}")
+            logger.warning(f"Failed to persist research run: {exc}")
 
     async def _store_if_enabled(
-            self,
-            symbol:str,
-            user_id : str | None,
-            aggregated: dict,
-    )->None:
+        self,
+        symbol: str,
+        user_id: str | None,
+        aggregated: dict,
+    ) -> None:
         try:
             await self._memory.store_research_summary(
                 symbol=symbol,
-                user_id=id, 
+                user_id=user_id,
                 recommendation=aggregated.get("recommendation", "HOLD"),
                 confidence_score=aggregated.get("confidence_score", 0.0),
                 executive_summary=aggregated.get("executive_summary", ""),
@@ -129,31 +124,31 @@ class ResearchService:
                 key_strengths=aggregated.get("strengths", []),
             )
         except Exception as exc:
-            logger.warning(f"failed to store memory summary: {exc}")
+            logger.warning(f"Failed to store memory summary: {exc}")
 
     def _error_response(
         self, symbol: str, request_id: str, error: str,
     ) -> ResearchResponse:
-            return ResearchResponse(
-                request_id=request_id,
-                symbol=symbol,
-                company_name=symbol,
-                executive_summary="Research workflow encountered an error.",
-                investment_thesis="",
-                recommendation="HOLD",
-                confidence_score=0.0,
-                news_summary="",
-                financial_summary="",
-                market_summary="",
-                sec_summary="",
-                memory_summary="",
-                key_metrics={},
-                strengths=[],
-                risks=[],
-                opportunities=[],
-                red_flags=[],
-                sources=[],
-                agent_outputs={},
-                errors=[error],
-                created_at=datetime.now(timezone.utc).isoformat(),
+        return ResearchResponse(
+            request_id=request_id,
+            symbol=symbol,
+            company_name=symbol,
+            executive_summary="Research workflow encountered an error.",
+            investment_thesis="",
+            recommendation="HOLD",
+            confidence_score=0.0,
+            news_summary="",
+            financial_summary="",
+            market_summary="",
+            sec_summary="",
+            memory_summary="",
+            key_metrics={},
+            strengths=[],
+            risks=[],
+            opportunities=[],
+            red_flags=[],
+            sources=[],
+            agent_outputs={},
+            errors=[error],
+            created_at=datetime.now(timezone.utc).isoformat(),
         )
