@@ -47,8 +47,15 @@ async def sec_node(state: ResearchState) -> dict:
     return {
         "sec_data": output,
         "sec_summary": output.get("sec_summary", ""),
+        "sec_risk_factors": output.get("risk_factors", []),
+        "sec_red_flags": output.get("red_flags", []),
+        "sec_opportunities": output.get("opportunities", []),
+        "sec_growth_trends": output.get("growth_trends", []),
+        "sec_insider_trades": output.get("insider_trading", []),
+        "sec_key_metrics": output.get("key_metrics", {}),
+        "sec_material_events": output.get("material_events", []),
+        "sec_management_outlook": output.get("management_outlook", ""),
     }
-
 
 async def memory_node(state: ResearchState) -> dict:
     symbol = state["symbol"]

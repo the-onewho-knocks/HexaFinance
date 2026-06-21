@@ -388,3 +388,17 @@ During task with name 'sec_agent' and id 'a176a1ac-0579-6e2b-fb74-5c5bb249b7d2'
 2026-06-21 12:10:57.886 | INFO     | services.research_service:run_research:21 - Research started: 4f6efac1-05df-45a0-b591-ba64478091b3 for GE
 2026-06-21 12:14:01.790 | INFO     | services.research_service:run_research:21 - Research started: 52041c65-fd7a-480e-9196-a7ded086b1b0 for GE
 2026-06-21 12:24:33.157 | INFO     | services.research_service:run_research:21 - Research started: 0f854fde-fdfa-4d7b-bfbc-c5d7fa534230 for NVDA
+2026-06-21 12:43:59.521 | INFO     | services.research_service:run_research:21 - Research started: 61fcf190-4421-46e7-843c-2fa63a8dce6b for NVDA
+2026-06-21 12:51:10.255 | INFO     | services.research_service:run_research:21 - Research started: a3fdaa45-5a4f-46cc-9da1-8768ed61d1ea for NVDA
+2026-06-21 13:08:06.825 | INFO     | services.research_service:run_research:21 - Research started: 6522fa07-ac9f-48f0-ad7c-1a9f4e50dae4 for NVDA
+2026-06-21 13:08:18.845 | WARNING  | providers.finance.sec_client:cik_from_ticker:76 - CIK lookup exception for NVDA: [Errno 11001] getaddrinfo failed
+2026-06-21 13:08:18.848 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for NVDA, falling back to search
+2026-06-21 13:08:43.873 | INFO     | services.research_service:run_research:21 - Research started: 6747ddf9-4bb5-421a-9fe6-5faf8832fcd5 for NVDA
+2026-06-21 13:08:53.866 | WARNING  | tools.sec_tool:get_all_filings:62 - Submissions fetch failed for NVDA: [Errno 11001] getaddrinfo failed
+2026-06-21 13:09:06.434 | INFO     | services.research_service:run_research:21 - Research started: 7590bebe-24ad-4af4-b962-c082862e6b24 for GE
+2026-06-21 13:09:16.820 | WARNING  | tools.sec_tool:get_all_filings:94 - 10-K HTML fetch failed for GE: [sec] document fetch failed: 301
+2026-06-21 13:09:17.797 | WARNING  | agents.sec_agent:_llm_insights:107 - LLM SEC insights failed: Expecting value: line 1 column 1 (char 0)
+2026-06-21 13:18:38.064 | INFO     | services.research_service:run_research:21 - Research started: 7ac656ce-3cd1-43fb-af95-e79a7a063b4e for GE
+2026-06-21 13:18:50.630 | WARNING  | providers.finance.sec_client:cik_from_ticker:76 - CIK lookup exception for GE: [Errno 11001] getaddrinfo failed
+2026-06-21 13:18:50.633 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for GE, falling back to search
+2026-06-21 13:19:07.358 | INFO     | services.research_service:run_research:21 - Research started: 5a960814-8d05-4c6c-9c8a-3cf58c0da5da for GE

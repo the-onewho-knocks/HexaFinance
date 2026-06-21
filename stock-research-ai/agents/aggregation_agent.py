@@ -105,12 +105,18 @@ class AggregationAgent:
                 "news_summary": news.get("news_summary", ""),
                 "financial_summary": financial.get("financial_summary", ""),
                 "market_summary": market.get("market_summary", ""),
-                "sec_summary": sec.get("sec_summary", ""),
+                                "sec_summary": sec.get("sec_summary", ""),
+                "sec_risk_factors": sec.get("risk_factors", []),
+                "sec_red_flags": sec.get("red_flags", []),
+                "sec_opportunities": sec.get("opportunities", []),
+                "sec_insider_trades": sec.get("insider_trading", []),
+                "sec_management_outlook": sec.get("management_outlook", ""),
                 "source": "llm",
                 "error": None,
             }
         except (json.JSONDecodeError, ValueError):
             return self._deterministic_aggregate(news, financial, market, sec, memory)
+
 
     def _deterministic_aggregate(
         self, news: dict, financial: dict,
@@ -139,7 +145,32 @@ class AggregationAgent:
 
         sec_risks = sec.get("risk_factors", [])
         risks.extend(sec_risks)
+                # === New SEC insight integration ===
+        sec_red_flags = sec.get("red_flags", [])
+        sec_opportunities = sec.get("opportunities", [])
+        sec_insider_trades = sec.get("insider_trading", [])
+        sec_management_outlook = sec.get("management_outlook", "")
+        sec_key_metrics = sec.get("key_metrics", {})
 
+        red_flags = list(sec_red_flags)
+        opportunities = list(sec_opportunities)
+
+        # Confidence boost from positive management outlook
+        if sec_management_outlook:
+            positive_words = ["growth", "increase", "strong",
+                              "positive", "improvement", "record"]
+            if any(w in sec_management_outlook.lower() for w in positive_words):
+                confidence = min(confidence + 0.05, 1.0)
+
+        # Insider selling penalty
+        sell_count = sum(
+            1 for t in sec_insider_trades
+            if "sell" in str(t.get("document", "")).lower()
+        )
+        if sell_count >= 3:
+            red_flags.append(f"Multiple insider sales detected ({sell_count})")
+            confidence = max(confidence - 0.1, 0)
+       
         sentiment = news.get("sentiment", "neutral")
         recommendation = "HOLD"
         confidence = 0.5
@@ -168,8 +199,8 @@ class AggregationAgent:
             "confidence_score": confidence,
             "strengths": strengths,
             "risks": risks,
-            "opportunities": [],
-            "red_flags": [],
+            "red_flags": red_flags,
+            "opportunities": opportunities,
             "memory_summary": mem_text,
             "news_summary": news_text,
             "financial_summary": fin_text,

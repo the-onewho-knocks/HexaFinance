@@ -19,6 +19,14 @@ class ResearchState(TypedDict, total=False):
     financial_summary: str
     market_summary: str
     sec_summary: str
+    sec_risk_factors: list[str]
+    sec_red_flags: list[str]
+    sec_opportunities: list[str]
+    sec_growth_trends: list[str]
+    sec_insider_trades: list[dict]
+    sec_key_metrics: dict[str, Any]
+    sec_material_events: list[str]
+    sec_management_outlook: str
     memory_summary: str
     memory_provider: str | None
     memory_error: str | None
