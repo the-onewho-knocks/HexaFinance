@@ -1,0 +1,154 @@
+2026-06-21 01:33:57.555 | INFO     | services.research_service:run_research:21 - Research started: 7d1c9a82-b022-4928-bb8b-4a5cd6f0a73f for AAPL
+2026-06-21 01:34:19.668 | ERROR    | services.research_service:run_research:30 - Workflow failed for AAPL: RetryError[<Future at 0x1dc30b0c5f0 state=finished raised ProviderError>]
+2026-06-21 10:55:35.549 | INFO     | services.research_service:run_research:21 - Research started: cdc113fc-c851-45e1-8863-618df2648c41 for AAPL
+2026-06-21 10:55:59.252 | ERROR    | services.research_service:run_research:30 - Workflow failed for AAPL: RetryError[<Future at 0x19c82db0cb0 state=finished raised ProviderError>]
+2026-06-21 11:01:33.738 | INFO     | services.research_service:run_research:21 - Research started: e4b89cfd-2b6a-4254-920b-38109f9394c6 for AAPL
+2026-06-21 11:01:58.144 | ERROR    | services.research_service:run_research:32 - Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 116, in __call__
+    result = await fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\providers\finance\fmp_client.py", line 31, in get_income_statement
+    raise ProviderError("fmp", f"income statement failed: {r.text}")
+core.exceptions.ProviderError: [fmp] income statement failed: {
+  "Error Message": "Legacy Endpoint : Due to Legacy endpoints being no longer supported - This endpoint is only available for legacy users who have valid subscriptions prior August 31, 2025. Please visit our documentation page https://site.financialmodelingprep.com/developer/docs for our current APIs. "
+}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\services\research_service.py", line 24, in run_research
+    result = await run_research_workflow(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\workflow.py", line 60, in run_research_workflow
+    result = await _compiled.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 4105, in ainvoke
+    async for chunk in self.astream(
+    ...<30 lines>...
+            chunks.append(chunk)
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 3455, in astream
+    async for _ in runner.atick(
+    ...<16 lines>...
+            yield o
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 396, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 744, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 733, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 501, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\nodes.py", line 28, in financial_node
+    output = await _financial.run(symbol)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\agents\financial_agent.py", line 9, in run
+    raw = await self._tool.get_financials(symbol)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 13, in get_financials
+    income, balance, ratios = await self._fetch_all(symbol)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 31, in _fetch_all
+    income = await self._client.get_income_statement(symbol)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 193, in async_wrapped
+    return await copy(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 112, in __call__
+    do = await self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 157, in iter
+    result = await action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\_utils.py", line 111, in inner
+    return call(*args, **kwargs)
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\__init__.py", line 414, in exc_check
+    raise retry_exc from fut.exception()
+tenacity.RetryError: RetryError[<Future at 0x206a3d8f460 state=finished raised ProviderError>]
+During task with name 'financial_agent' and id '5b78e781-6d51-1585-d4a6-cc9a4104e5f0'
+
+2026-06-21 11:13:47.386 | INFO     | services.research_service:run_research:21 - Research started: d937281a-fc1c-4e66-b9d6-7eea4a3a8135 for AAPL
+2026-06-21 11:14:13.066 | ERROR    | services.research_service:run_research:32 - Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 116, in __call__
+    result = await fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\providers\finance\fmp_client.py", line 34, in get_income_statement
+    raise ProviderError("fmp", f"income statement failed: {r.text}")
+core.exceptions.ProviderError: [fmp] income statement failed: Found. Redirecting to /stable/income-statement?apikey=JydmJmFycp33F48oOiXYs3t1RPZI5kdr&symbol=AAPL&limit=4
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\services\research_service.py", line 24, in run_research
+    result = await run_research_workflow(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\workflow.py", line 60, in run_research_workflow
+    result = await _compiled.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 4105, in ainvoke
+    async for chunk in self.astream(
+    ...<30 lines>...
+            chunks.append(chunk)
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 3455, in astream
+    async for _ in runner.atick(
+    ...<16 lines>...
+            yield o
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 396, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 744, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 733, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 501, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\nodes.py", line 28, in financial_node
+    output = await _financial.run(symbol)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\agents\financial_agent.py", line 9, in run
+    raw = await self._tool.get_financials(symbol)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 13, in get_financials
+    income, balance, ratios = await self._fetch_all(symbol)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 31, in _fetch_all
+    income = await self._client.get_income_statement(symbol)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 193, in async_wrapped
+    return await copy(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 112, in __call__
+    do = await self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\asyncio\__init__.py", line 157, in iter
+    result = await action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\_utils.py", line 111, in inner
+    return call(*args, **kwargs)
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\tenacity\__init__.py", line 414, in exc_check
+    raise retry_exc from fut.exception()
+tenacity.RetryError: RetryError[<Future at 0x1e7db6ff8a0 state=finished raised ProviderError>]
+During task with name 'financial_agent' and id 'edbe0650-c97b-5544-973f-438858f74967'
+

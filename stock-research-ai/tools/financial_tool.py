@@ -17,8 +17,10 @@ class FinancialTool:
                 "ratios": ratios[:1] if ratios else [],
                 "source": "fmp",
             }
-        except ProviderError as exc:
-            logger.warning(f"Financial fetch failed for {symbol}: {exc}")
+
+        except Exception as exc:
+            logger.exception(f"Financial fetch failed for {symbol}")
+
             return {
                 "income_statement": [],
                 "balance_sheet": [],

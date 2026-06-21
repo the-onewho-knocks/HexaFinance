@@ -9,7 +9,9 @@ class SECClient:
     """Thin wrapper around SEC EDGAR full-text search."""
 
     HEADERS = {
-        "User-Agent": "StockResearchAI contact@example.com",
+        "User-Agent": "StockResearchAI drj2905@gmail.com",
+        "Accept-Encoding": "gzip, deflate",
+        "Host": "efts.sec.gov",
     }
 
     async def search_filings(

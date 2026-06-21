@@ -2,11 +2,11 @@ from datetime import date , timedelta
 from loguru import logger
 
 from core.exceptions import ProviderError
-from providers.finance.finnhub_client import FinhubCLient
+from providers.finance.finnhub_client import FinhubClient
 
-class NewsTools:
+class NewsTool:
     def __init__(self):
-        self._client = FinhubCLient()
+        self._client = FinhubClient()
 
     async def get_news(self , symbol:str , days: int = 7)-> dict:
         to_date = date.today().isoformat()

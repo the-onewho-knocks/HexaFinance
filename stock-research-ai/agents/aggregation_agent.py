@@ -2,7 +2,7 @@ from core.config import settings
 from providers.llm.gateway import LLMGateway
 from schemas.llm import LLMRequest
 
-class AggreationAgent:
+class AggregationAgent:
     def __init__(self):
         has_gemini = bool(settings.gemini_api_key)
         has_groq = bool(settings.groq_api_key)
@@ -74,8 +74,16 @@ class AggreationAgent:
 
         req = LLMRequest(prompt=prompt, max_tokens=2048, temperature=0.3)
         resp = await self._llm.complete(req)
+        return self._parse_llm_response(
+            resp.text,
+            news,
+            financial,
+            market,
+            sec,
+            memory,
+        )
 
-        return self._parse_llm.complete(req)
+        # return self._parse_llm.complete(req)
     
     def _parse_llm_response(
         self, text: str, news: dict, financial: dict,

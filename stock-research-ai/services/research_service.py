@@ -27,9 +27,11 @@ class ResearchService:
                 deep_analysis=request.deep_analysis,
             )
         except Exception as exc:
-            logger.error(f"Workflow failed for {symbol}: {exc}")
-            return self._error_response(symbol, request_id, str(exc))
+            import traceback
 
+            logger.error(traceback.format_exc())
+            return self._error_response(symbol, request_id, str(exc))
+            
         aggregated = result.get("aggregated", {})
 
         response = ResearchResponse(

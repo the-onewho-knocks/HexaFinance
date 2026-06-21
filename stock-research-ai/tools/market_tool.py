@@ -1,13 +1,13 @@
 from loguru import logger
 
 from core.exceptions import ProviderError
-from providers.finance.finnhub_client import FinhubCLient
+from providers.finance.finnhub_client import FinhubClient
 from providers.finance.polygon_client import PolygonClient
 
 class MarketTool:
     def __init__(self) -> None:
         self._polygon_client = PolygonClient()
-        self._finnhub_client = FinhubCLient()
+        self._finnhub_client = FinhubClient()
 
     async def get_market_data(self, symbol: str) -> dict:
         result : dict = {"source": "finnhub+polygon"}
