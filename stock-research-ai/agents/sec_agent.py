@@ -68,6 +68,7 @@ class SECAgent:
             "opportunities": insights.get("opportunities", []),
             "source": "sec",
             "sources": sources,
+            "latest_10k_html": html,        
             "error": filings_result.get("error"),
         }
 
@@ -171,7 +172,10 @@ class SECAgent:
 
         if not filings:
             return {
-                "sec_summary": f"No SEC filings found for {symbol}",
+                "sec_summary": (
+                    f"Found {len(filings)} SEC filings for {symbol}. "
+                    f"Content analysis unavailable (CIK lookup failed)."
+                ),
                 "risk_factors": [],
                 "management_outlook": "",
                 "growth_trends": [],
@@ -181,7 +185,8 @@ class SECAgent:
                 "red_flags": [],
                 "opportunities": [],
                 "source": "sec",
-                "sources": [],
+                "sources": sources,
+                "latest_10k_html": "",             
                 "error": raw.get("error"),
             }
 

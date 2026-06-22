@@ -1,10 +1,15 @@
+from loguru import logger
+
 from agents.news_agent import NewsAgent
 from agents.financial_agent import FinancialAgent
 from agents.market_agent import MarketAgent
 from agents.sec_agent import SECAgent
 from agents.memory_agent import MemoryAgent
 from agents.aggregation_agent import AggregationAgent
+from core.constants import COLLECTION_SEC_FILINGS
 from graph.state import ResearchState
+from rag.index_manager import index_text
+from rag.retrieval.retriever import retrieve_context, retrieve_sources
 
 _news = NewsAgent()
 _financial = FinancialAgent()
@@ -57,6 +62,60 @@ async def sec_node(state: ResearchState) -> dict:
         "sec_management_outlook": output.get("management_outlook", ""),
     }
 
+
+async def qdrant_node(state: ResearchState) -> dict:
+    symbol = state["symbol"]
+    sec_data = state.get("sec_data", {})
+
+    risk_factors = sec_data.get("risk_factors", [])
+    mda_text = sec_data.get("management_outlook", "")
+
+    text_to_index = ""
+    if risk_factors:
+        text_to_index += "Risk Factors:\n" + "\n".join(risk_factors) + "\n\n"
+    if mda_text:
+        text_to_index += "Management Outlook:\n" + mda_text
+
+    result = {
+        "qdrant_context": "",
+        "qdrant_sources": [],
+        "qdrant_error": None,
+    }
+
+    if not text_to_index.strip():
+        result["qdrant_error"] = "No SEC text available to index"
+        return result
+
+    try:
+        await index_text(
+            text_to_index,
+            symbol=symbol,
+            form_type="10-K",
+            collection_name=COLLECTION_SEC_FILINGS,
+        )
+    except Exception as exc:
+        logger.warning(f"Qdrant indexing failed for {symbol}: {exc}")
+
+    try:
+        context = await retrieve_context(
+            f"SEC risk factors and management outlook for {symbol}",
+            symbol=symbol,
+            limit=5,
+        )
+        sources = await retrieve_sources(
+            f"SEC risk factors and management outlook for {symbol}",
+            symbol=symbol,
+            limit=5,
+        )
+        result["qdrant_context"] = context
+        result["qdrant_sources"] = sources
+    except Exception as exc:
+        logger.warning(f"Qdrant search failed for {symbol}: {exc}")
+        result["qdrant_error"] = str(exc)
+
+    return result
+
+
 async def memory_node(state: ResearchState) -> dict:
     symbol = state["symbol"]
     user_id = state.get("user_id")
@@ -76,6 +135,7 @@ async def aggregation_node(state: ResearchState) -> dict:
         "market": state.get("market_data", {}),
         "sec": state.get("sec_data", {}),
         "memory": state.get("memory_data", {}),
+        "qdrant": state.get("qdrant_context", ""),
     }
 
     output = await _aggregation.run(agent_outputs)

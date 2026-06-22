@@ -5,6 +5,7 @@ from core.constants import (
     NODE_FINANCIAL,
     NODE_MARKET,
     NODE_SEC,
+    NODE_QDRANT,
     NODE_MEMORY,
     NODE_AGGREGATE,
 )
@@ -16,6 +17,7 @@ from graph.nodes import (
     market_node,
     memory_node,
     news_node,
+    qdrant_node,
     sec_node,
 )
 from graph.state import ResearchState
@@ -28,6 +30,7 @@ def build_graph() -> StateGraph:
     workflow.add_node(NODE_FINANCIAL, financial_node)
     workflow.add_node(NODE_MARKET, market_node)
     workflow.add_node(NODE_SEC, sec_node)
+    workflow.add_node(NODE_QDRANT, qdrant_node)
     workflow.add_node(NODE_MEMORY, memory_node)
     workflow.add_node(NODE_AGGREGATE, aggregation_node)
 
@@ -36,7 +39,8 @@ def build_graph() -> StateGraph:
     workflow.add_edge(NODE_NEWS, NODE_FINANCIAL)
     workflow.add_edge(NODE_FINANCIAL, NODE_MARKET)
     workflow.add_edge(NODE_MARKET, NODE_SEC)
-    workflow.add_edge(NODE_SEC, NODE_MEMORY)
+    workflow.add_edge(NODE_SEC, NODE_QDRANT)
+    workflow.add_edge(NODE_QDRANT, NODE_MEMORY)
     workflow.add_edge(NODE_MEMORY, NODE_AGGREGATE)
     workflow.add_edge(NODE_AGGREGATE, END)
 

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     # Memory
     xtrace_api_key: str = Field("", env="XTRACE_API_KEY")
-    xtrace_base_url: str = Field("", env="XTRACE_BASE_URL")
+    xtrace_org_id: str = Field("", env="XTRACE_BASE_URL")
 
     # Vector DB
     qdrant_url: str = Field("http://localhost:6333", env="QDRANT_URL")

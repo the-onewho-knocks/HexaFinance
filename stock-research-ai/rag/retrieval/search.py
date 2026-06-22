@@ -1,4 +1,5 @@
 from loguru import logger
+from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 from providers.embeddings.embedding_provider import EmbeddingProvider
 from vectorstore.qdrant_client import get_qdrant_client
@@ -24,15 +25,14 @@ async def search_similar(
     query_filter = None
 
     if symbol:
-        from qdrant_client.models import FieldCondition, MatchValue
-        query_filter = {
-            "must": [
+        query_filter = Filter(
+            must=[
                 FieldCondition(
                     key="symbol",
                     match=MatchValue(value=symbol),
                 )
             ]
-        }
+        )
 
     try:
         results = await client.search(

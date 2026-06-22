@@ -4,6 +4,7 @@ from core.constants import (
     NODE_MARKET,
     NODE_SEC,
     NODE_MEMORY,
+    NODE_QDRANT,
     NODE_AGGREGATE,
 )
 
@@ -12,6 +13,7 @@ ALL_NODES = [
     NODE_FINANCIAL,
     NODE_MARKET,
     NODE_SEC,
+    NODE_QDRANT,
     NODE_MEMORY,
     NODE_AGGREGATE,
 ]

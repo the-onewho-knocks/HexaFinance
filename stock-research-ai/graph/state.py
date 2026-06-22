@@ -31,6 +31,10 @@ class ResearchState(TypedDict, total=False):
     memory_provider: str | None
     memory_error: str | None
 
+    qdrant_context: str
+    qdrant_sources: list[dict]
+    qdrant_error: str | None
+
     # Aggregation output
     executive_summary: str
     investment_thesis: str

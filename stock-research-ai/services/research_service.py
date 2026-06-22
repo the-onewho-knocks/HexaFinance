@@ -66,6 +66,11 @@ class ResearchService:
                 "market": result.get("market_data", {}),
                 "sec": result.get("sec_data", {}),
                 "memory": result.get("memory_data", {}),
+                "qdrant": {
+                    "context": result.get("qdrant_context", ""),
+                    "sources": result.get("qdrant_sources", []),
+                    "error": result.get("qdrant_error"),
+                },
             },
             errors=result.get("errors", []),
             created_at=datetime.now(timezone.utc).isoformat(),
