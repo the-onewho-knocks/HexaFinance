@@ -8,7 +8,7 @@ from core.config import settings
 class EmbeddingProvider:
     def __init__(self):
         self._client = genai.Client(api_key=settings.gemini_api_key)
-        self._model = "text-embedding-004"
+        self._model = "models/gemini-embedding-2"
 
     async def embed_text(self, text: str) -> list[float]:
         cache_key = f"emb:{hash(text)}"

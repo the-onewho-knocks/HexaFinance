@@ -3,7 +3,7 @@ from vectorstore.qdrant_client import get_qdrant_client
 from core.constants import COLLECTION_SEC_FILINGS, COLLECTION_REPORTS
 from loguru import logger
 
-EMBEDDING_DIM = 768  # text-embedding-004 output size
+EMBEDDING_DIM = 3072  # text-embedding-004 output size
 
 async def ensure_collections() -> None:
     client = get_qdrant_client()

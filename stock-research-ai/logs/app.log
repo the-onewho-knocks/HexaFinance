@@ -465,3 +465,416 @@ During task with name 'sec_agent' and id 'a176a1ac-0579-6e2b-fb74-5c5bb249b7d2'
 2026-06-22 12:43:46.984 | INFO     | services.research_service:run_research:21 - Research started: 7c6fc10f-73b4-4f21-9e78-5519f0fe79a4 for AAPL
 2026-06-22 12:43:56.126 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AAPL: [Errno 11001] getaddrinfo failed
 2026-06-22 12:43:56.128 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AAPL, falling back to search
+2026-06-22 13:09:16.411 | INFO     | services.research_service:run_research:21 - Research started: f3e2b10b-3d93-4032-9047-38e188cd1410 for AMZN
+2026-06-22 13:09:17.321 | ERROR    | services.research_service:run_research:32 - Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 101, in handle_async_request
+    raise exc
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 124, in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_backends\auto.py", line 31, in connect_tcp
+    return await self._backend.connect_tcp(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_backends\anyio.py", line 113, in connect_tcp
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\services\research_service.py", line 24, in run_research
+    result = await run_research_workflow(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\workflow.py", line 64, in run_research_workflow
+    result = await _compiled.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 4105, in ainvoke
+    async for chunk in self.astream(
+    ...<30 lines>...
+            chunks.append(chunk)
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\main.py", line 3455, in astream
+    async for _ in runner.atick(
+    ...<16 lines>...
+            yield o
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 396, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 744, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 733, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 501, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\nodes.py", line 24, in news_node
+    output = await _news.run(symbol)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\agents\news_agent.py", line 8, in run
+    raw = await self._tool.get_news(symbol)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\news_tool.py", line 16, in get_news
+    articles = await self._client.get_company_news(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\providers\finance\finnhub_client.py", line 22, in get_company_news
+    resp = await client.get(url, params=params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1768, in get
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 11001] getaddrinfo failed
+During task with name 'news_agent' and id 'db51e6e5-4950-7949-2679-c05e12736ca7'
+
+2026-06-22 13:12:21.064 | INFO     | services.research_service:run_research:21 - Research started: cd10fa65-83dd-4e7a-87e5-3f11d6506fc4 for AMZN
+2026-06-22 13:12:21.471 | WARNING  | tools.news_tool:get_news:28 - News fetch failed for AMZN: [Errno 11001] getaddrinfo failed
+2026-06-22 13:12:29.567 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AMZN: [Errno 11001] getaddrinfo failed
+2026-06-22 13:12:29.568 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AMZN, falling back to search
+2026-06-22 13:13:50.106 | INFO     | services.research_service:run_research:21 - Research started: 529c1667-626a-44dc-b208-0cc624a435c0 for AAPL
+2026-06-22 13:13:59.566 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:13:59.569 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AAPL, falling back to search
+2026-06-22 13:14:34.329 | INFO     | services.research_service:run_research:21 - Research started: 68ca3df2-c754-41ae-89e3-b55952d6cc02 for AAPL
+2026-06-22 13:14:43.213 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0000320193: [Errno 11001] getaddrinfo failed
+2026-06-22 13:14:47.000 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:14:47.575 | WARNING  | providers.embeddings.embedding_provider:embed_batch:46 - Batch embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:14:47.576 | WARNING  | rag.ingestion.embedding_pipeline:embed_and_index:35 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:14:47.853 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:14:47.853 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:14:48.042 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:14:48.043 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:17:58.912 | INFO     | services.research_service:run_research:21 - Research started: 9512b555-3f3b-4e04-a3c6-f158527f2f9f for AAPL
+2026-06-22 13:17:59.395 | WARNING  | tools.news_tool:get_news:28 - News fetch failed for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:18:07.476 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:18:07.479 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AAPL, falling back to search
+2026-06-22 13:18:35.662 | INFO     | services.research_service:run_research:21 - Research started: 41e96cf9-9ad0-402f-90ee-498ff0702ab9 for AAPL
+2026-06-22 13:18:47.878 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:18:48.444 | WARNING  | providers.embeddings.embedding_provider:embed_batch:46 - Batch embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:18:48.444 | WARNING  | rag.ingestion.embedding_pipeline:embed_and_index:35 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:18:48.705 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:18:48.705 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:18:48.914 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:18:48.914 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:21:46.354 | INFO     | services.research_service:run_research:21 - Research started: 6a2b8ba5-3fde-445c-8786-1951c010a447 for AAPL
+2026-06-22 13:21:55.129 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:21:55.131 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AAPL, falling back to search
+2026-06-22 13:22:05.817 | INFO     | services.research_service:run_research:21 - Research started: 099e79bb-aa7d-48df-bb9e-bab363721b56 for AAPL
+2026-06-22 13:22:17.933 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:22:18.484 | WARNING  | providers.embeddings.embedding_provider:embed_batch:46 - Batch embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:22:18.484 | WARNING  | rag.ingestion.embedding_pipeline:embed_and_index:35 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:22:18.759 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:22:18.760 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:22:18.939 | WARNING  | providers.embeddings.embedding_provider:embed_text:28 - Embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:22:18.939 | WARNING  | rag.retrieval.search:search_similar:21 - Query embedding failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/text-embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2026-06-22 13:25:29.452 | INFO     | services.research_service:run_research:21 - Research started: a86809d0-ee8f-49bd-a52d-5f81b92c5194 for AAPL
+2026-06-22 13:25:29.954 | WARNING  | tools.news_tool:get_news:28 - News fetch failed for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:25:38.139 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for AAPL: [Errno 11001] getaddrinfo failed
+2026-06-22 13:25:38.142 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for AAPL, falling back to search
+2026-06-22 13:26:08.224 | INFO     | services.research_service:run_research:21 - Research started: ddfa7fae-85ff-4951-a040-9459912bd6bb for AAPL
+2026-06-22 13:26:17.863 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0000320193: [Errno 11001] getaddrinfo failed
+2026-06-22 13:26:22.151 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:26:23.025 | INFO     | vectorstore.collections:ensure_collections:31 - Created Qdrant collection: sec_filings
+2026-06-22 13:26:23.471 | INFO     | vectorstore.collections:ensure_collections:31 - Created Qdrant collection: reports
+2026-06-22 13:26:24.546 | INFO     | rag.ingestion.embedding_pipeline:embed_and_index:56 - Indexed 1 chunks for AAPL in 'sec_filings'
+2026-06-22 13:26:25.208 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:26:25.732 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:27:58.537 | INFO     | services.research_service:run_research:21 - Research started: 4bb07030-3b9a-49f6-9e36-f38b40cb1405 for AAPL
+2026-06-22 13:28:10.033 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0000320193: [Errno 11001] getaddrinfo failed
+2026-06-22 13:28:14.751 | INFO     | rag.ingestion.embedding_pipeline:embed_and_index:56 - Indexed 1 chunks for AAPL in 'sec_filings'
+2026-06-22 13:28:15.835 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:28:16.389 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:28:56.313 | INFO     | services.research_service:run_research:21 - Research started: 45792f90-6280-47c0-8816-227d6a16b771 for NVDA
+2026-06-22 13:29:05.012 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for NVDA: [Errno 11001] getaddrinfo failed
+2026-06-22 13:29:05.015 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for NVDA, falling back to search
+2026-06-22 13:29:28.124 | INFO     | services.research_service:run_research:21 - Research started: cf8162ce-3ebb-4fc0-a116-cb2cae91fac4 for NVDA
+2026-06-22 13:29:37.754 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0001045810: [Errno 11001] getaddrinfo failed
+2026-06-22 13:29:42.898 | INFO     | rag.ingestion.embedding_pipeline:embed_and_index:56 - Indexed 1 chunks for NVDA in 'sec_filings'
+2026-06-22 13:29:43.567 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:29:44.148 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: 'AsyncQdrantClient' object has no attribute 'search'
+2026-06-22 13:34:54.763 | INFO     | services.research_service:run_research:21 - Research started: 09660b1e-2597-4b56-9701-304140d97d3d for NVDA
+2026-06-22 13:34:56.393 | ERROR    | tools.financial_tool:get_financials:22 - Financial fetch failed for NVDA
+Traceback (most recent call last):
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+                 │    │     │                    └ <Request [b'GET']>
+                 │    │     └ <function AsyncConnectionPool.handle_async_request at 0x000002576703E160>
+                 │    └ <AsyncConnectionPool [Requests: 0 active, 0 queued | Connections: 0 active, 0 idle]>
+                 └ <httpx.AsyncHTTPTransport object at 0x00000257670D37A0>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+                     │          └ <function AsyncHTTPConnection.handle_async_request at 0x000002576703D260>
+                     └ <AsyncHTTPConnection [CONNECTION FAILED]>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 101, in handle_async_request
+    raise exc
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+                   │    │        └ <Request [b'GET']>
+                   │    └ <function AsyncHTTPConnection._connect at 0x000002576703D300>
+                   └ <AsyncHTTPConnection [CONNECTION FAILED]>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_async\connection.py", line 124, in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+                   │    │                │             └ {'host': 'financialmodelingprep.com', 'port': 443, 'local_address': None, 'timeout': 15, 'socket_options': None}
+                   │    │                └ <function AutoBackend.connect_tcp at 0x00000257670371A0>
+                   │    └ <httpcore._backends.auto.AutoBackend object at 0x00000257670D3020>
+                   └ <AsyncHTTPConnection [CONNECTION FAILED]>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_backends\auto.py", line 31, in connect_tcp
+    return await self._backend.connect_tcp(
+                 │    │        └ <function AnyIOBackend.connect_tcp at 0x0000025767052B60>
+                 │    └ <httpcore.AnyIOBackend object at 0x00000257670BFED0>
+                 └ <httpcore._backends.auto.AutoBackend object at 0x00000257670D3020>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_backends\anyio.py", line 113, in connect_tcp
+    with map_exceptions(exc_map):
+         │              └ {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>, <class 'anyio...
+         └ <function map_exceptions at 0x0000025766EF7C40>
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    │    │   │     └ gaierror(11001, 'getaddrinfo failed')
+    │    │   └ <method 'throw' of 'generator' objects>
+    │    └ <generator object map_exceptions at 0x000002576713C130>
+    └ <contextlib._GeneratorContextManager object at 0x0000025767092580>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+          └ <class 'httpcore.ConnectError'>
+
+httpcore.ConnectError: [Errno 11001] getaddrinfo failed
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+  File "C:\Program Files\Python313\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 196
+               │     └ 3
+               └ <function _main at 0x00000257469A53A0>
+  File "C:\Program Files\Python313\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 196
+           │    └ <function BaseProcess._bootstrap at 0x0000025746680540>
+           └ <SpawnProcess name='SpawnProcess-1' parent=3348 started>
+  File "C:\Program Files\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x00000257466AFA60>
+    └ <SpawnProcess name='SpawnProcess-1' parent=3348 started>
+  File "C:\Program Files\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {'config': <uvicorn.config.Config object at 0x0000025748A73CB0>, 'target': <bound method Server.run of <uvicorn.server.Server...
+    │    │        │    │        └ <SpawnProcess name='SpawnProcess-1' parent=3348 started>
+    │    │        │    └ ()
+    │    │        └ <SpawnProcess name='SpawnProcess-1' parent=3348 started>
+    │    └ <function subprocess_started at 0x0000025748B5E340>
+    └ <SpawnProcess name='SpawnProcess-1' parent=3348 started>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    │              └ [<socket.socket fd=604, family=2, type=1, proto=6, laddr=('127.0.0.1', 8000)>]
+    └ <bound method Server.run of <uvicorn.server.Server object at 0x0000025748A73E00>>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           │           │    │             │                      │    │      └ <function Config.get_loop_factory at 0x0000025748AE0A40>
+           │           │    │             │                      │    └ <uvicorn.config.Config object at 0x0000025748A73CB0>
+           │           │    │             │                      └ <uvicorn.server.Server object at 0x0000025748A73E00>
+           │           │    │             └ [<socket.socket fd=604, family=2, type=1, proto=6, laddr=('127.0.0.1', 8000)>]
+           │           │    └ <function Server.serve at 0x0000025748B5D260>
+           │           └ <uvicorn.server.Server object at 0x0000025748A73E00>
+           └ <function run at 0x0000025746E07920>
+  File "C:\Program Files\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x0000025748B6F060>
+           │      └ <function Runner.run at 0x0000025748826340>
+           └ <asyncio.runners.Runner object at 0x0000025748BD4AD0>
+  File "C:\Program Files\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\s...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000002574881FEC0>
+           │    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x0000025748BD4AD0>
+  File "C:\Program Files\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000002574881FE20>
+    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+  File "C:\Program Files\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x0000025748825C60>
+    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+  File "C:\Program Files\Python313\Lib\asyncio\base_events.py", line 2061, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x0000025746DF3BA0>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Program Files\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 501, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+                │    │      │       └ {}
+                │    │      └ ({'symbol': 'NVDA', 'user_id': None, 'deep_analysis': False, 'news_data': {'news_summary': "Found 20 recent news articles for...
+                │    └ <function financial_node at 0x00000257670800E0>
+                └ financial_agent(tags=None, recurse=True, explode_args=False, func_accepts={})
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\graph\nodes.py", line 33, in financial_node
+    output = await _financial.run(symbol)
+                   │          │   └ 'NVDA'
+                   │          └ <function FinancialAgent.run at 0x000002574C3A1940>
+                   └ <agents.financial_agent.FinancialAgent object at 0x0000025767033380>
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\agents\financial_agent.py", line 9, in run
+    raw = await self._tool.get_financials(symbol)
+                │    │     │              └ 'NVDA'
+                │    │     └ <function FinancialTool.get_financials at 0x000002574C3A1C60>
+                │    └ <tools.financial_tool.FinancialTool object at 0x00000257670334D0>
+                └ <agents.financial_agent.FinancialAgent object at 0x0000025767033380>
+
+> File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 13, in get_financials
+    income, balance, ratios = await self._fetch_all(symbol)
+                                    │    │          └ 'NVDA'
+                                    │    └ <function FinancialTool._fetch_all at 0x000002574C3A2020>
+                                    └ <tools.financial_tool.FinancialTool object at 0x00000257670334D0>
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\tools\financial_tool.py", line 33, in _fetch_all
+    income = await self._client.get_income_statement(symbol)
+                   │    │       │                    └ 'NVDA'
+                   │    │       └ <function FMPClient.get_income_statement at 0x000002574C3A1E40>
+                   │    └ <providers.finance.fmp_client.FMPClient object at 0x0000025767033620>
+                   └ <tools.financial_tool.FinancialTool object at 0x00000257670334D0>
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\providers\finance\fmp_client.py", line 27, in get_income_statement
+    r = await c.get(
+              │ └ <function AsyncClient.get at 0x000002574B79B240>
+              └ <httpx.AsyncClient object at 0x00000257670BDD10>
+
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1768, in get
+    return await self.request(
+                 │    └ <function AsyncClient.request at 0x000002574B79ADE0>
+                 └ <httpx.AsyncClient object at 0x00000257670BDD10>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+                 │    │    │             │                      └ <httpx._client.UseClientDefault object at 0x000002574B774AD0>
+                 │    │    │             └ <httpx._client.UseClientDefault object at 0x000002574B774AD0>
+                 │    │    └ <Request('GET', 'https://financialmodelingprep.com/stable/income-statement?apikey=JydmJmFycp33F48oOiXYs3t1RPZI5kdr&symbol=NVD...
+                 │    └ <function AsyncClient.send at 0x000002574B79AFC0>
+                 └ <httpx.AsyncClient object at 0x00000257670BDD10>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+                     │    └ <function AsyncClient._send_handling_auth at 0x000002574B79B060>
+                     └ <httpx.AsyncClient object at 0x00000257670BDD10>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+                     │    └ <function AsyncClient._send_handling_redirects at 0x000002574B79B100>
+                     └ <httpx.AsyncClient object at 0x00000257670BDD10>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+                     │    │                    └ <Request('GET', 'https://financialmodelingprep.com/stable/income-statement?apikey=JydmJmFycp33F48oOiXYs3t1RPZI5kdr&symbol=NVD...
+                     │    └ <function AsyncClient._send_single_request at 0x000002574B79B1A0>
+                     └ <httpx.AsyncClient object at 0x00000257670BDD10>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+                     │         │                    └ <Request('GET', 'https://financialmodelingprep.com/stable/income-statement?apikey=JydmJmFycp33F48oOiXYs3t1RPZI5kdr&symbol=NVD...
+                     │         └ <function AsyncHTTPTransport.handle_async_request at 0x000002574B78FD80>
+                     └ <httpx.AsyncHTTPTransport object at 0x00000257670D37A0>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         └ <function map_httpcore_exceptions at 0x000002574B78F380>
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    │    │   │     └ ConnectError(gaierror(11001, 'getaddrinfo failed'))
+    │    │   └ <method 'throw' of 'generator' objects>
+    │    └ <generator object map_httpcore_exceptions at 0x00000257670CEB40>
+    └ <contextlib._GeneratorContextManager object at 0x0000025767092900>
+  File "C:\A-Projects-gng\Finance-Simulation\stock-research-ai\venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+          │          └ '[Errno 11001] getaddrinfo failed'
+          └ <class 'httpx.ConnectError'>
+
+httpx.ConnectError: [Errno 11001] getaddrinfo failed
+2026-06-22 13:35:00.623 | WARNING  | providers.finance.sec_client:cik_from_ticker:69 - CIK lookup exception for NVDA: [Errno 11001] getaddrinfo failed
+2026-06-22 13:35:00.626 | WARNING  | tools.sec_tool:get_all_filings:54 - CIK lookup failed for NVDA, falling back to search
+2026-06-22 13:35:36.560 | INFO     | services.research_service:run_research:21 - Research started: 34396a34-5f61-44c2-90a2-460073c7e7e1 for NVDA
+2026-06-22 13:35:46.366 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0001045810: [Errno 11001] getaddrinfo failed
+2026-06-22 13:35:50.204 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:35:51.498 | INFO     | rag.ingestion.embedding_pipeline:embed_and_index:56 - Indexed 1 chunks for NVDA in 'sec_filings'
+2026-06-22 13:35:52.154 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: Unknown arguments: ['query_vector']
+2026-06-22 13:35:52.656 | WARNING  | rag.retrieval.search:search_similar:45 - Qdrant search failed: Unknown arguments: ['query_vector']
+2026-06-22 13:37:39.784 | INFO     | services.research_service:run_research:21 - Research started: 82a3b390-0419-466c-ad9a-d6c0b1f37fe6 for NVDA
+2026-06-22 13:37:49.163 | WARNING  | providers.finance.sec_client:get_submissions:93 - Submissions fetch failed for CIK 0001045810: [Errno 11001] getaddrinfo failed
+2026-06-22 13:37:53.468 | INFO     | vectorstore.qdrant_client:get_qdrant_client:15 - Qdrant client initialised → http://localhost:6333
+2026-06-22 13:37:54.893 | INFO     | rag.ingestion.embedding_pipeline:embed_and_index:56 - Indexed 1 chunks for NVDA in 'sec_filings'

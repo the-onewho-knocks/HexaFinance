@@ -35,12 +35,13 @@ async def search_similar(
         )
 
     try:
-        results = await client.search(
+        response = await client.query_points(
             collection_name=collection_name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=limit,
             query_filter=query_filter,
         )
+        results = response.points
     except Exception as exc:
         logger.warning(f"Qdrant search failed: {exc}")
         return []

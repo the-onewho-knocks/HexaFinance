@@ -28,9 +28,18 @@ class FinancialAgent:
         net_income = latest_income.get("netIncome", 0)
         total_assets = latest_balance.get("totalAssets", 0)
         total_liabilities = latest_balance.get("totalLiabilities", 0)
-        pe_ratio = latest_ratios.get("priceEarningsRatio", 0)
-        debt_equity = latest_ratios.get("debtEquityRatio", 0)
-
+        pe_ratio = (
+            latest_ratios.get("priceEarningsRatio")
+            or latest_ratios.get("priceToEarningsRatio")
+            or latest_ratios.get("peRatio")
+            or 0
+        )
+        debt_equity = (
+            latest_ratios.get("debtEquityRatio")
+            or latest_ratios.get("debtToEquityRatio")
+            or latest_ratios.get("debtEquity")
+            or 0
+        )
         key_metrics = {
             "revenue": revenue,
             "net_income": net_income,
