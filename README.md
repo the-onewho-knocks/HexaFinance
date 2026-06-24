@@ -31,8 +31,7 @@ The platform simulates real-world portfolio management, buy/sell transactions, e
 - [License](#license)
 
 ## Architecture Diagram:-
-Below is a high-level overview of the system architecture:
- 
+### Below is a high-level overview of the system architectur:
 ```mermaid
 graph TB
     Client["Client Layer<br/>Web / Mobile Client"]
@@ -185,6 +184,10 @@ graph TB
     style NetWorthEngine fill:#D85A30,stroke:#993C1D,stroke-width:2px,color:#000000
     style GracefulShutdown fill:#D85A30,stroke:#993C1D,stroke-width:2px,color:#000000
 ```
+### System Overview:
+
+<img width="1652" height="1255" alt="image" src="https://github.com/user-attachments/assets/f1c453d2-a4e0-4810-a902-79700046ae4a" />
+
 
 ## Core Design Principles:-
 1) Separation of Concerns – Each layer (handler, service, repository) has a single, well-defined role
