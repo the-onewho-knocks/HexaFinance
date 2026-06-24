@@ -31,7 +31,7 @@ The platform simulates real-world portfolio management, buy/sell transactions, e
 - [License](#license)
 
 ## Architecture Diagram:-
-### Below is a high-level overview of the system architectur:
+### Below is a high-level system architectur:
 <!-- me and my jasmine created this -->
 ```mermaid
 graph TB
@@ -223,7 +223,6 @@ graph TB
 | LLM Providers | Gemini (`google-genai`), Groq — behind a single gateway abstraction |
 | Vector Store | Qdrant (semantic search over SEC filing chunks) |
 | Financial Data | Finnhub, Polygon, Financial Modeling Prep (FMP), SEC API |
-| Memory | External memory provider (XTrace) for cross-session research recall |
 | Database | PostgreSQL (`psycopg2`) for reports & watchlists |
 | Cache | Redis |
 | PDF/Doc processing | `pypdf`, `pdfplumber` |
