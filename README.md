@@ -1,10 +1,7 @@
 # HEXAFINANCE
 
 A production-grade financial simulation platform: a **Go** backend built on Clean/Hexagonal Architecture, paired with an independent **Python (FastAPI + LangGraph)** multi-agent service that performs autonomous, LLM-driven equity research with a fully deterministic fallback when no LLM is available.
-
 The platform simulates real-world portfolio management, buy/sell transactions, expense tracking, live market data ingestion, technical indicators, net worth analytics, and AI-generated stock research reports backed by SEC filings, financial statements, news, and historical memory.
-
-It isn't a CRUD demo with extra steps — it's built the way a real trading/fintech backend would be: monetary math uses fixed-point decimals (never floats), portfolio cost-basis is recomputed atomically inside PostgreSQL, net worth recalculation runs asynchronously so trade requests don't block on it, and the AI research engine degrades gracefully to rule-based analysis if every LLM provider is unavailable.
 
 ## The project demonstrates:-
 1) Clean Hexagonal Architecture with strict domain separation (handlers → services → repositories, all behind interfaces)
@@ -34,37 +31,164 @@ It isn't a CRUD demo with extra steps — it's built the way a real trading/fint
 - [License](#license)
 
 ## Architecture Diagram:-
-Below is a high-level overview of the system architecture:
-
-<img width="2121" height="2991" alt="final" src="https://github.com/user-attachments/assets/bf1f3663-235a-4354-837d-5e92998cfde7" />
-
-**Request flow at a glance:**
+### Below is a high-level system architecture:
+<!-- me and my jasmine created this -->
+```mermaid
+graph TB
+    Client["Client Layer<br/>Web / Mobile Client"]
+    
+    API["HTTP API Layer<br/>Chi Router + Middleware<br/>Logging | Recovery | Tracing | Timeout"]
+    
+    AuthHandler["Auth Handlers"]
+    PortfolioHandler["Portfolio Handlers"]
+    TransactionHandler["Transaction Handlers"]
+    ExpenseHandler["Expense Handlers"]
+    MarketHandler["Market Handlers"]
+    DashboardHandler["Dashboard Handlers"]
+    ResearchHandler["Research Handlers<br/>POST /research<br/>Query Analysis"]
+    
+    UserService["User Service<br/>Registration | JWT Auth<br/>Role Management"]
+    PortfolioService["Portfolio Service<br/>Holdings | Valuation<br/>Updates"]
+    TransactionService["Transaction Service<br/>Buy/Sell | Settlement<br/>History"]
+    ExpenseService["Expense Service<br/>Tracking | Categories<br/>Planned Expenses"]
+    MarketService["Market Service<br/>Live Data | Heatmap<br/>Cache Management"]
+    DashboardService["Dashboard Service<br/>Portfolio Summary<br/>Net Worth | Expenses"]
+    ResearchService["Research Service<br/>Company Analysis<br/>Filing Processing<br/>Risk Extraction"]
+    
+    LangGraphAgent["LangGraph Research Agent<br/>State Management<br/>Agentic Workflow<br/>Tool Orchestration"]
+    
+    LLM["LLM Model<br/>Claude / GPT-4<br/>/ Gemini 4.0 flash <br/>Reasoning Engine<br/>Query Planning"]
+    
+    ResearchTools["Research Tools<br/>SEC Filing Tool<br/>Vector Search Tool<br/>Market Data Tool<br/>Extraction Tool"]
+    
+    UserRepo["UserRepository"]
+    PortfolioRepo["PortfolioRepository"]
+    TransactionRepo["TransactionRepository"]
+    ExpenseRepo["ExpenseRepository"]
+    StockPriceRepo["StockPriceRepository"]
+    DashboardRepo["DashboardRepository"]
+    
+    PostgreSQL["PostgreSQL Database<br/>Users | Portfolios<br/>Transactions | Expenses<br/>pgx + Connection Pool"]
+    
+    Redis["Redis Cache Layer<br/>Stock Prices Cache<br/>Dashboard Cache<br/>Cache-Aside Strategy"]
+    
+    RapidAPI["RapidAPI Integration<br/>Stock Market Data<br/>Real-time Quotes<br/>Market Heatmap"]
+    
+    SECClient["SEC Client<br/>CIK Resolution<br/>Filing Search<br/>Document Fetch"]
+    
+    SECTool["SEC Tool<br/>Extract Risk Factors<br/>Extract MD&A<br/>Parse 10-K Data<br/>Extract Material Events<br/>Extract Insider Trades"]
+    
+    EmbeddingEngine["Embedding Engine<br/>Text Embedding<br/>3072D Vectors<br/>Document Chunking"]
+    
+    QdrantVectorDB["Qdrant Vector DB<br/>SEC Filings Collection<br/>Research Reports<br/>Similarity Search<br/>Vector Indexing"]
+    
+    DocumentProcessor["Document Processor<br/>HTML Cleaning<br/>Text Extraction<br/>Table Parsing<br/>Bullet Point Splitting"]
+    
+    NetWorthEngine["Net Worth Engine<br/>Aggregates Portfolio Value<br/>Subtracts Expenses<br/>Real-time Calculation"]
+    
+    GracefulShutdown["Graceful Shutdown<br/>OS Signals<br/>Channel-based Coordination"]
+    
+    Client -->|HTTP Request| API
+    
+    API --> AuthHandler
+    API --> PortfolioHandler
+    API --> TransactionHandler
+    API --> ExpenseHandler
+    API --> MarketHandler
+    API --> DashboardHandler
+    API --> ResearchHandler
+    
+    AuthHandler --> UserService
+    PortfolioHandler --> PortfolioService
+    TransactionHandler --> TransactionService
+    ExpenseHandler --> ExpenseService
+    MarketHandler --> MarketService
+    DashboardHandler --> DashboardService
+    ResearchHandler --> ResearchService
+    
+    UserService --> UserRepo
+    PortfolioService --> PortfolioRepo
+    TransactionService --> TransactionRepo
+    ExpenseService --> ExpenseRepo
+    MarketService --> StockPriceRepo
+    DashboardService --> DashboardRepo
+    
+    UserRepo --> PostgreSQL
+    PortfolioRepo --> PostgreSQL
+    TransactionRepo --> PostgreSQL
+    ExpenseRepo --> PostgreSQL
+    
+    StockPriceRepo --> Redis
+    StockPriceRepo -->|Cache Miss| RapidAPI
+    DashboardRepo --> Redis
+    
+    RapidAPI -->|Live Prices| MarketService
+    
+    ResearchService --> LangGraphAgent
+    
+    LangGraphAgent -->|Query Planning| LLM
+    LLM -->|Tool Calls| LangGraphAgent
+    LangGraphAgent --> ResearchTools
+    
+    ResearchTools -->|SEC Filing Tool| SECClient
+    ResearchTools -->|Vector Search Tool| EmbeddingEngine
+    ResearchTools -->|Market Data Tool| StockPriceRepo
+    ResearchTools -->|Extraction Tool| DocumentProcessor
+    
+    SECClient -->|Fetch Filings| SECTool
+    SECTool --> DocumentProcessor
+    DocumentProcessor -->|Cleaned Text| EmbeddingEngine
+    
+    EmbeddingEngine -->|Vector Embeddings| QdrantVectorDB
+    QdrantVectorDB -->|Vector Search Results| LLM
+    
+    SECTool -->|Extracted Data| LLM
+    
+    PortfolioService --> NetWorthEngine
+    ExpenseService --> NetWorthEngine
+    
+    API --> GracefulShutdown
+    
+    style Client fill:#378ADD,stroke:#185fa5,stroke-width:2px,color:#000000
+    style API fill:#7F77DD,stroke:#534ab7,stroke-width:2px,color:#000000
+    style AuthHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style PortfolioHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style TransactionHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style ExpenseHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style MarketHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style DashboardHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style ResearchHandler fill:#534AB7,stroke:#3C3489,color:#000000
+    style UserService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style PortfolioService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style TransactionService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style ExpenseService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style MarketService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style DashboardService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style ResearchService fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style LangGraphAgent fill:#7F77DD,stroke:#534ab7,stroke-width:2.5px,color:#000000
+    style LLM fill:#D4537E,stroke:#993556,stroke-width:2.5px,color:#000000
+    style ResearchTools fill:#1D9E75,stroke:#0F6E56,stroke-width:2px,color:#000000
+    style UserRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style PortfolioRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style TransactionRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style ExpenseRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style StockPriceRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style DashboardRepo fill:#0F6E56,stroke:#085041,color:#000000
+    style PostgreSQL fill:#BA7517,stroke:#854F0B,stroke-width:2px,color:#000000
+    style Redis fill:#639922,stroke:#3B6D11,stroke-width:2px,color:#000000
+    style RapidAPI fill:#E24B4A,stroke:#A32D2D,stroke-width:2px,color:#000000
+    style SECClient fill:#E24B4A,stroke:#A32D2D,stroke-width:2px,color:#000000
+    style SECTool fill:#E24B4A,stroke:#A32D2D,stroke-width:2px,color:#000000
+    style EmbeddingEngine fill:#993556,stroke:#72243E,stroke-width:2px,color:#000000
+    style QdrantVectorDB fill:#993556,stroke:#72243E,stroke-width:2px,color:#000000
+    style DocumentProcessor fill:#E24B4A,stroke:#A32D2D,stroke-width:2px,color:#000000
+    style NetWorthEngine fill:#D85A30,stroke:#993C1D,stroke-width:2px,color:#000000
+    style GracefulShutdown fill:#D85A30,stroke:#993C1D,stroke-width:2px,color:#000000
 ```
-Client
-  │
-  ▼
-Go Backend (Chi Router)
-  │  RequestID → RealIP → Logger → Recoverer → Timeout(60s) → CORS
-  │
-  ├──► Auth / User / Admin ───────► PostgreSQL (pgx pool)
-  ├──► Portfolio / Transactions ───► PostgreSQL  ─┐
-  │                                  Redis ◄──────┤ (cache-aside: stock prices)
-  ├──► Expenses / Planned Expenses ► PostgreSQL    │
-  ├──► Net Worth ──────────────────► PostgreSQL  (aggregates portfolio + cash − expenses)
-  ├──► Market / Heatmap ───────────► RapidAPI ────► Redis (TTL cache)
-  ├──► Dashboard ──────────────────► Redis (composed, cached view)
-  │
-  └──► /research ──── reverse proxy ────► Python FastAPI Service
-                                              │
-                                              ▼
-                                     LangGraph Agent Pipeline
-                          News → Financial → Market → SEC → Qdrant (RAG) → Memory → Aggregation
-                                              │
-                          ┌───────────────────┼────────────────────┐
-                          ▼                   ▼                    ▼
-                   LLM Gateway          Qdrant Vector DB      External Memory
-                  (Gemini / Groq)      (SEC filing chunks)     (XTrace provider)
-```
+### System Overview:
+
+<img width="1652" height="1255" alt="image" src="https://github.com/user-attachments/assets/f1c453d2-a4e0-4810-a902-79700046ae4a" />
+
 
 ## Core Design Principles:-
 1) Separation of Concerns – Each layer (handler, service, repository) has a single, well-defined role
@@ -99,7 +223,6 @@ Go Backend (Chi Router)
 | LLM Providers | Gemini (`google-genai`), Groq — behind a single gateway abstraction |
 | Vector Store | Qdrant (semantic search over SEC filing chunks) |
 | Financial Data | Finnhub, Polygon, Financial Modeling Prep (FMP), SEC API |
-| Memory | External memory provider (XTrace) for cross-session research recall |
 | Database | PostgreSQL (`psycopg2`) for reports & watchlists |
 | Cache | Redis |
 | PDF/Doc processing | `pypdf`, `pdfplumber` |
@@ -345,7 +468,10 @@ GET /users/{userID}/expenses
 ```
 
 ### 7. Net Worth
-POST /users/{userID}/networth/recalculate &nbsp;·&nbsp; GET /users/{userID}/networth/latest &nbsp;·&nbsp; GET /users/{userID}/networth/history &nbsp;·&nbsp; GET /users/{userID}/networth/breakdown
+POST /users/{userID}/networth/recalculate &nbsp;·&nbsp; 
+GET /users/{userID}/networth/latest &nbsp;·&nbsp; 
+GET /users/{userID}/networth/history &nbsp;·&nbsp; 
+GET /users/{userID}/networth/breakdown
 
 ```json
 GET /users/{userID}/networth/breakdown
@@ -455,7 +581,7 @@ cd backend
 go mod tidy
 go run cmd/main.go
 ```
-Set the following environment variables (see `backend/cmd/.env`):
+Set the following environment variables (`backend/cmd/.env`):
 `APP_PORT`, `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET`, `REDIS_HOST`, `REDIS_PASSWORD`, `REDIS_DB`, `RAPIDAPI_KEY`, `RAPIDAPI_HOST`, `INDIAN_RAPIDAPI_KEY`, `INDIAN_RAPIDAPI_HOST`, `STOCK_RESEARCH_AI_URL`
 
 ### Run the AI Research Service (Python)
@@ -464,7 +590,7 @@ cd stock-research-ai
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
-Set the following environment variables (see `stock-research-ai/.env`):
+Set the following environment variables (`stock-research-ai/.env`):
 `GEMINI_API_KEY`, `GROQ_API_KEY`, `FINNHUB_API_KEY`, `FMP_API_KEY`, `POLYGON_API_KEY`, `SEC_API_KEY`, `XTRACE_API_KEY`, `XTRACE_ORG_ID`, `QDRANT_URL`, `QDRANT_API_KEY`, `DATABASE_URL`, `REDIS_URL`
 
 > Both services connect independently to PostgreSQL and Redis; point `STOCK_RESEARCH_AI_URL` (Go side) at wherever the FastAPI service is running so `/research` requests proxy correctly. Note: neither `GEMINI_API_KEY` nor `GROQ_API_KEY` is strictly required to run research requests — omit both and the SEC and Aggregation agents automatically switch to their deterministic fallback logic.
